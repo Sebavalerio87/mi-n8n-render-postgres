@@ -72,7 +72,7 @@ databases:
   - name: n8n-db
     plan: basic-256mb # Plan Basic-256MB para tu base de datos
     diskSizeGB: 15 # Tamaño de disco para el plan Basic-256MB
-    postgresMajorVersion: '14'
+    postgresMajorVersion: '15'
     # region: oregon
    
     
