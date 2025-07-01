@@ -1,3 +1,4 @@
+
 # Use this Blueprint to deploy n8n on Render as a web
 # service that uses a Postgres database to store
 # workflow data.
@@ -19,7 +20,8 @@ services:
       - key: N8N_ENCRYPTION_KEY
         generateValue: true
 
-      # Aquí ya está tu URL asignada por Render. ¡Perfecto!
+      # --- Configuración de URL de n8n ---
+      # Ya confirmaste que esta es la URL correcta asignada por Render.
       - key: WEBHOOK_URL
         value: https://n8n-service-pbqp.onrender.com
       - key: N8N_HOST
@@ -30,7 +32,7 @@ services:
       - key: NODE_ENV
         value: production
 
-      # Configuración de autenticación básica (MUY RECOMENDADO por seguridad)
+      # --- Configuración de Autenticación Básica (MUY RECOMENDADO por seguridad) ---
       # Render te pedirá un usuario y contraseña cuando despliegues.
       - key: N8N_BASIC_AUTH_ACTIVE
         value: 'true'
@@ -39,12 +41,20 @@ services:
       - key: N8N_BASIC_AUTH_PASSWORD
         sync: false
 
-      # Configura tu zona horaria para que n8n muestre los horarios correctos.
+      # --- Configuración de Zona Horaria ---
       - key: GENERIC_TIMEZONE
         value: America/Argentina/Buenos_Aires
 
-      # Conexión a la base de datos PostgreSQL.
-      # Render automáticamente llenará estos valores desde la configuración de tu base de datos.
+      # --- NUEVAS VARIABLES DE OPTIMIZACIÓN Y ADVERTENCIAS ---
+      # Estas corrigen la advertencia de permisos del archivo de configuración de n8n.
+      - key: N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS
+        value: 'true'
+      # Estas activan los Task Runners, mejorando el rendimiento y la estabilidad.
+      - key: N8N_RUNNERS_ENABLED
+        value: 'true'
+
+      # --- Conexión a la Base de Datos PostgreSQL ---
+      # Render automáticamente llenará estos valores desde la configuración de tu DB.
       - key: DB_TYPE
         value: postgresdb
       - key: DB_POSTGRESDB_DATABASE
@@ -73,6 +83,5 @@ databases:
     plan: basic-256mb # Plan Basic-256MB para tu base de datos
     diskSizeGB: 15 # Tamaño de disco para el plan Basic-256MB
     # region: oregon
-   
     
    
