@@ -2,37 +2,49 @@
 # service that uses a Postgres database to store
 # workflow data.
 #
-# This Blueprint uses free instance types (specified by
+# This Blueprint uses starter instance types (specified by
 # `plan`) for both the web service and the database. You
 # can upgrade to paid instance types at any time to
 # increase resources.
 
 services:
   - type: web
-    plan: free
-    # This is the runtime for services that pull a prebuilt Docker image
+    plan: starter # Plan Starter para tu servicio web de n8n
     runtime: image
-    # You can give the service any name
     name: n8n-service
     image:
-      # Pulls the n8n image tagged as latest from Docker Hub
       url: docker.io/n8nio/n8n:latest
 
-    # All environment variables defined below are required!
-    #
-    # You can define additional environment variables as needed.
     envVars:
-      # Generates a base64-encoded key for
-      # encrypting credentials in n8n
-      #
-      # Do not modify this value after it's generated!
-      # If you do, you'll lose access to all credentials
-      # encrypted with the previous value.
       - key: N8N_ENCRYPTION_KEY
         generateValue: true
 
-      # These automatically populate connection details 
-      # for the Render Postgres database defined below
+      # Aquí ya está tu URL asignada por Render. ¡Perfecto!
+      - key: WEBHOOK_URL
+        value: https://n8n-service-pbqp.onrender.com
+      - key: N8N_HOST
+        value: https://n8n-service-pbqp.onrender.com
+
+      - key: N8N_PROTOCOL
+        value: https
+      - key: NODE_ENV
+        value: production
+
+      # Configuración de autenticación básica (MUY RECOMENDADO por seguridad)
+      # Render te pedirá un usuario y contraseña cuando despliegues.
+      - key: N8N_BASIC_AUTH_ACTIVE
+        value: 'true'
+      - key: N8N_BASIC_AUTH_USER
+        sync: false
+      - key: N8N_BASIC_AUTH_PASSWORD
+        sync: false
+
+      # Configura tu zona horaria para que n8n muestre los horarios correctos.
+      - key: GENERIC_TIMEZONE
+        value: America/Argentina/Buenos_Aires
+
+      # Conexión a la base de datos PostgreSQL.
+      # Render automáticamente llenará estos valores desde la configuración de tu base de datos.
       - key: DB_TYPE
         value: postgresdb
       - key: DB_POSTGRESDB_DATABASE
@@ -51,15 +63,17 @@ services:
         fromDatabase:
           name: n8n-db
           property: user
+      - key: DB_POSTGRESDB_PORT
+        fromDatabase:
+          name: n8n-db
+          property: port
 
 databases:
   - name: n8n-db
-    plan: free
-    # The free instance type is limited to 1 GB of disk
-    # space.
-    #
-    # If you later upgrade to a paid instance type, you can
-    # increase the disk size to any multiple of 5 GB by
-    # setting the `diskSizeGB` property.
-    #
-    # diskSizeGB: 5
+    plan: basic-256mb # Plan Basic-256MB para tu base de datos
+    diskSizeGB: 15 # Tamaño de disco para el plan Basic-256MB
+    postgresMajorVersion: '14'
+    # region: oregon
+   
+    
+   
